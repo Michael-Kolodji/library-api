@@ -1,5 +1,9 @@
 package com.cursodsousa.libraryapi.service.impl;
 
+import java.util.Optional;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.cursodsousa.libraryapi.exception.BusinessException;
@@ -21,6 +25,33 @@ public class BookServiceImpl implements BookService {
 			throw new BusinessException("Isbn já cadastrado");
 		}
 		return repository.save(book);
+	}
+
+	@Override
+	public Optional<Book> getById(Long id) {
+		return repository.findById(id);
+	}
+
+	@Override
+	public void delete(Book book) {
+		if(book == null || book.getId() == null) {
+			throw new IllegalArgumentException("O id do livro não pode ser nullo");
+		}
+		repository.delete(book);
+	}
+
+	@Override
+	public Book update(Book book) {
+		if(book == null || book.getId() == null) {
+			throw new IllegalArgumentException("O id do livro não pode ser nullo");
+		}
+		return repository.save(book);
+	}
+
+	@Override
+	public Page<Book> find(Book filter, Pageable pageRequest) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
