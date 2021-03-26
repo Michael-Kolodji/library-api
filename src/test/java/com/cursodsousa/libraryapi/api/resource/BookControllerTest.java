@@ -31,13 +31,14 @@ import com.cursodsousa.libraryapi.api.dto.BookDTO;
 import com.cursodsousa.libraryapi.exception.BusinessException;
 import com.cursodsousa.libraryapi.model.entity.Book;
 import com.cursodsousa.libraryapi.service.BookService;
+import com.cursodsousa.libraryapi.service.LoanService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 @WebMvcTest(controllers = BookController.class)
 @AutoConfigureMockMvc
-class BookResourcesTest {
+class BookControllerTest {
 
 	static String BOOK_API = "/api/books";
 	
@@ -46,6 +47,9 @@ class BookResourcesTest {
 	
 	@MockBean
 	BookService service;
+	
+	@MockBean
+	LoanService LoanService;
 	
 	@Test
 	@DisplayName("Deve criar um livro com sucesso.")

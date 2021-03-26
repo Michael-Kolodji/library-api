@@ -2,7 +2,9 @@ package com.cursodsousa.libraryapi.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.List;
@@ -32,6 +34,7 @@ import com.cursodsousa.libraryapi.service.impl.BookServiceImpl;
 class BookServiceTest {
 
 	BookService service;
+	
 	@MockBean
 	BookRepository repository;
 	
@@ -58,7 +61,7 @@ class BookServiceTest {
 	
 	@Test
 	@DisplayName("Deve lançar erro de negócio ao tentar salvar um livro com isbn duplicado")
-	void shouldNotSavedABookwithDuplicatedISBN() {
+	void shouldNotSavedABookwithDuplicatedISBNTest() {
 		
 		Book book = createValidBook();
 		Mockito.when(repository.existsByIsbn(Mockito.anyString())).thenReturn(true);
@@ -74,7 +77,7 @@ class BookServiceTest {
 	
 	@Test
 	@DisplayName("Deve obter um livro por Id")
-	void getById() {
+	void getByIdTest() {
 		Long id = 1l;
 		
 		Book book = createValidBook();
@@ -92,7 +95,7 @@ class BookServiceTest {
 	
 	@Test
 	@DisplayName("Deve retornar vazio ao obter um livro por Id quando ele não existe na base")
-	void getNotFoundById() {
+	void getNotFoundByIdTest() {
 		Long id = 1l;
 		
 		Mockito.when(repository.findById(id)).thenReturn(Optional.empty());
@@ -104,7 +107,7 @@ class BookServiceTest {
 	
 	@Test
 	@DisplayName("Deve excluir um livro")
-	void deleteBook() {
+	void deleteBookTest() {
 		Book book = Book.builder().id(1l).build();
 		
 		org.junit.jupiter.api.Assertions.assertDoesNotThrow(() -> service.delete(book));
@@ -114,7 +117,7 @@ class BookServiceTest {
 	
 	@Test
 	@DisplayName("Deve retornar erro ao excluir um livro sem id")
-	void deleteInexistentIdBook() {
+	void deleteInexistentIdBookTest() {
 		Book book = new Book();
 		
 		org.junit.jupiter.api.Assertions.assertThrows(IllegalArgumentException.class, () -> service.delete(book));
@@ -125,7 +128,7 @@ class BookServiceTest {
 	
 	@Test
 	@DisplayName("Deve atualizar um livro")
-	void updateBook() {
+	void updateBookTest() {
 		Long id = 1l;
 		//livro a atualizar
 		Book updatingBook = Book.builder().id(id).build();		
@@ -148,7 +151,7 @@ class BookServiceTest {
 	
 	@Test
 	@DisplayName("Deve retornar erro ao atualizar um livro sem id")
-	void updateInexistentIdBook() {
+	void updateInexistentIdBookTest() {
 		Book book = new Book();
 		
 		org.junit.jupiter.api.Assertions.assertThrows(IllegalArgumentException.class, () -> service.update(book));
@@ -159,7 +162,7 @@ class BookServiceTest {
 	
 	@Test
 	@DisplayName("Deve filtrar livros pelas propriedades")
-	void findBook() {
+	void findBookTest() {
 		
 		Book book = createValidBook();
 		
@@ -174,6 +177,21 @@ class BookServiceTest {
 		assertThat(result.getContent()).isEqualTo(lista);
 		assertThat(result.getPageable().getPageNumber()).isEqualTo(0);
 		assertThat(result.getPageable().getPageSize()).isEqualTo(10);
+	}
+	
+	@Test
+	@DisplayName("Deve obter um livro pelo isbn")
+	void getBookByIsbnTest() {
+		String isbn = "1230";
+		when(repository.findByIsbn(isbn)).thenReturn(Optional.of(Book.builder().id(1l).isbn(isbn).build()));
+		
+		Optional<Book> book = service.getBookByIsbn(isbn);
+		
+		assertThat(book).isPresent();
+		assertThat(book.get().getId()).isEqualTo(1l);
+		assertThat(book.get().getIsbn()).isEqualTo(isbn);
+		
+		verify(repository, times(1)).findByIsbn(isbn);
 	}
 	
 	private Book createValidBook() {

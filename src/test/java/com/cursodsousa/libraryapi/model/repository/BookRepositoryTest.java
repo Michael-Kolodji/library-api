@@ -89,7 +89,7 @@ class BookRepositoryTest {
 		
 	}
 
-	private Book createNewBook() {
+	public static Book createNewBook() {
 		return Book.builder().isbn("123").author("Fulano").title("As aventuras").build();
 	}
 }
