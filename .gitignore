@@ -32,5 +32,12 @@ build/
 ### VS Code ###
 .vscode/
 
+### Logs ###
 appfile.log
 =appfile.log
+
+### Config ###
+cred_mail.txt
+
+### Archives ###
+*.gz
